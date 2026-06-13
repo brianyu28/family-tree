@@ -12,6 +12,7 @@ wheels/
 # Family tree
 family.yaml
 *.png
+!examples/example.png
 
 # Other
 .DS_Store

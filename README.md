@@ -1,9 +1,23 @@
 # Family Tree Generator
 
+A Python script for generating family tree diagrams.
+
+## Example
+
+![Example family tree diagram](examples/example.png)
+
 ## Usage
 
+With `python`:
+
 ```sh
-uv run main.py example.yaml
+python main.py examples/example.yaml
+```
+
+With `uv`:
+
+```sh
+uv run main.py examples/example.yaml
 ```
 
 ## Configuration
@@ -12,8 +26,9 @@ All family configuration is stored in a `.yaml` file.
 
 ### People
 
-Each person can have a `name` and `secondaryName`. Other properties are ignored
-(e.g. `previousName`).
+Each person can have a `name` and `secondaryName`. `secondaryName` can be used
+for names in other languages, year of birth, or other information to display.
+Other properties are ignored.
 
 ```yaml
 ElizabethII:
@@ -50,3 +65,6 @@ config:
     - AndrewMountbattenWindsor
   skipVisit: []
 ```
+
+Update `FONT_CANDIDATES` in `constants.py` to specify the fonts to use for
+rendering the family tree.

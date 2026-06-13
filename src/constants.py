@@ -64,5 +64,4 @@ FONT_CANDIDATES = (
     Path("/System/Library/Fonts/Supplemental/Arial.ttf"),
     Path("/Library/Fonts/Arial Unicode.ttf"),
     Path("/Library/Fonts/Arial.ttf"),
-    Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"),
 )

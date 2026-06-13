@@ -90,21 +90,14 @@ def _draw_partner_line(
     if len(partners) < 2:
         return
     left_id, right_id = partners[:2]
-    left_x, left_y = layout.positions[left_id]
-    right_x, right_y = layout.positions[right_id]
-    if left_x <= right_x:
-        start = (left_x + NODE_WIDTH / 2, left_y + NODE_HEIGHT / 2)
-        end = (right_x - NODE_WIDTH / 2, right_y + NODE_HEIGHT / 2)
-    else:
-        start = (left_x - NODE_WIDTH / 2, left_y + NODE_HEIGHT / 2)
-        end = (right_x + NODE_WIDTH / 2, right_y + NODE_HEIGHT / 2)
+    start, end = _partner_side_points(left_id, right_id, layout)
 
     lane = layout.partner_lanes.get(relationship.index, 0)
     if lane == 0:
         _line(draw, [start, end], relationship.current, scale)
         return
 
-    y_route = routed_partner_y(left_y, lane)
+    y_route = routed_partner_y(layout.positions[left_id][1], lane)
     stub_direction = 1 if end[0] > start[0] else -1
     points = [
         start,
@@ -132,6 +125,10 @@ def _draw_child_lines(
         if len(partners) == 1:
             origin_x = parent_x_values[0]
             origin_y = parent_top + NODE_HEIGHT
+        elif layout.partner_lanes.get(relationship.index, 0) > 0:
+            origin_x, origin_y = _routed_partner_child_origin(
+                relationship, partners, children, layout, parent_top
+            )
         else:
             origin_x = sum(parent_x_values[:2]) / min(len(parent_x_values), 2)
             origin_y = parent_top + NODE_HEIGHT / 2
@@ -171,6 +168,106 @@ def _draw_child_lines(
     _line(draw, [(first_x, branch_y), (last_x, branch_y)], True, scale)
     for child_x, child_top in child_points:
         _line(draw, [(child_x, branch_y), (child_x, child_top)], True, scale)
+
+
+def _routed_partner_child_origin(
+    relationship: Relationship,
+    partners: list[str],
+    children: list[str],
+    layout: Layout,
+    parent_top: float,
+) -> tuple[float, float]:
+    """Choose a clear child stem point on a routed partner connector."""
+    left_id, right_id = partners[:2]
+    start, end = _partner_side_points(left_id, right_id, layout)
+    lane = layout.partner_lanes[relationship.index]
+    route_y = routed_partner_y(parent_top, lane)
+    stub_direction = 1 if end[0] > start[0] else -1
+    segment_start_x = start[0] + stub_direction * ROUTED_PARTNER_STUB
+    segment_end_x = end[0] - stub_direction * ROUTED_PARTNER_STUB
+    low_x = min(segment_start_x, segment_end_x)
+    high_x = max(segment_start_x, segment_end_x)
+
+    child_x_values = [layout.positions[child_id][0] for child_id in children]
+    desired_x = sum(child_x_values) / len(child_x_values)
+    return (
+        _nearest_open_vertical_x(layout, desired_x, low_x, high_x, route_y, parent_top),
+        route_y,
+    )
+
+
+def _partner_side_points(
+    left_id: str,
+    right_id: str,
+    layout: Layout,
+) -> tuple[tuple[float, float], tuple[float, float]]:
+    left_x, left_y = layout.positions[left_id]
+    right_x, right_y = layout.positions[right_id]
+    if left_x <= right_x:
+        return (
+            (left_x + NODE_WIDTH / 2, left_y + NODE_HEIGHT / 2),
+            (right_x - NODE_WIDTH / 2, right_y + NODE_HEIGHT / 2),
+        )
+    return (
+        (left_x - NODE_WIDTH / 2, left_y + NODE_HEIGHT / 2),
+        (right_x + NODE_WIDTH / 2, right_y + NODE_HEIGHT / 2),
+    )
+
+
+def _nearest_open_vertical_x(
+    layout: Layout,
+    desired_x: float,
+    low_x: float,
+    high_x: float,
+    origin_y: float,
+    row_top: float,
+) -> float:
+    """Find the closest x where a vertical stem can pass between row boxes."""
+    padding = max(LINE_WIDTH * 6, 18)
+    blocked_intervals = []
+    row_bottom = row_top + NODE_HEIGHT
+    for center_x, top in layout.positions.values():
+        bottom = top + NODE_HEIGHT
+        if bottom < origin_y or top > row_bottom:
+            continue
+        blocked_intervals.append(
+            (
+                center_x - NODE_WIDTH / 2 - padding,
+                center_x + NODE_WIDTH / 2 + padding,
+            )
+        )
+
+    open_intervals: list[tuple[float, float]] = []
+    cursor = low_x
+    for blocked_start, blocked_end in sorted(blocked_intervals):
+        if blocked_end <= low_x or blocked_start >= high_x:
+            continue
+        blocked_start = max(blocked_start, low_x)
+        blocked_end = min(blocked_end, high_x)
+        if cursor < blocked_start:
+            open_intervals.append((cursor, blocked_start))
+        cursor = max(cursor, blocked_end)
+    if cursor < high_x:
+        open_intervals.append((cursor, high_x))
+
+    if not open_intervals:
+        return min(max(desired_x, low_x), high_x)
+
+    candidates = [
+        _preferred_x_in_interval(desired_x, interval_start, interval_end)
+        for interval_start, interval_end in open_intervals
+    ]
+    return min(candidates, key=lambda x: abs(x - desired_x))
+
+
+def _preferred_x_in_interval(
+    desired_x: float,
+    interval_start: float,
+    interval_end: float,
+) -> float:
+    if interval_start <= desired_x <= interval_end:
+        return desired_x
+    return (interval_start + interval_end) / 2
 
 
 def _line(
