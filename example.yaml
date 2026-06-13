@@ -1,0 +1,188 @@
+people:
+  ElizabethII:
+    name: Queen Elizabeth II
+  Philip:
+    name: Prince Philip
+
+  CharlesIII:
+    name: King Charles III
+  DianaSpencer:
+    name: Diana, Princess of Wales
+  Camilla:
+    name: Queen Camilla
+  Anne:
+    name: Anne, Princess Royal
+  MarkPhillips:
+    name: Mark Phillips
+  TimothyLaurence:
+    name: Timothy Laurence
+  AndrewMountbattenWindsor:
+    name: Andrew Mountbatten-Windsor
+  SarahFerguson:
+    name: Sarah Ferguson
+  Edward:
+    name: Prince Edward
+  Sophie:
+    name: Sophie, Duchess of Edinburgh
+
+  William:
+    name: Prince William
+  Catherine:
+    name: Catherine, Princess of Wales
+  Harry:
+    name: Prince Harry
+  Meghan:
+    name: Meghan, Duchess of Sussex
+
+  PeterPhillips:
+    name: Peter Phillips
+  AutumnPhillips:
+    name: Autumn Phillips
+  ZaraTindall:
+    name: Zara Tindall
+  MikeTindall:
+    name: Mike Tindall
+
+  Beatrice:
+    name: Princess Beatrice
+  EdoardoMapelliMozzi:
+    name: Edoardo Mapelli Mozzi
+  Eugenie:
+    name: Princess Eugenie
+  JackBrooksbank:
+    name: Jack Brooksbank
+
+  LouiseWindsor:
+    name: Lady Louise Windsor
+  James:
+    name: James, Earl of Wessex
+
+  George:
+    name: Prince George
+  Charlotte:
+    name: Princess Charlotte
+  Louis:
+    name: Prince Louis
+  Archie:
+    name: Prince Archie
+  Lilibet:
+    name: Princess Lilibet
+
+  SavannahPhillips:
+    name: Savannah Phillips
+  IslaPhillips:
+    name: Isla Phillips
+  MiaTindall:
+    name: Mia Tindall
+  LenaTindall:
+    name: Lena Tindall
+  LucasTindall:
+    name: Lucas Tindall
+
+  SiennaMapelliMozzi:
+    name: Sienna Mapelli Mozzi
+  AthenaMapelliMozzi:
+    name: Athena Mapelli Mozzi
+  AugustBrooksbank:
+    name: August Brooksbank
+  ErnestBrooksbank:
+    name: Ernest Brooksbank
+
+relationships:
+  - partners:
+      - ElizabethII
+      - Philip
+    children:
+      - CharlesIII
+      - Anne
+      - AndrewMountbattenWindsor
+      - Edward
+
+  - partners:
+      - CharlesIII
+      - DianaSpencer
+    current: false
+    children:
+      - William
+      - Harry
+
+  - partners:
+      - CharlesIII
+      - Camilla
+
+  - partners:
+      - William
+      - Catherine
+    children:
+      - George
+      - Charlotte
+      - Louis
+
+  - partners:
+      - Harry
+      - Meghan
+    children:
+      - Archie
+      - Lilibet
+
+  - partners:
+      - Anne
+      - MarkPhillips
+    current: false
+    children:
+      - PeterPhillips
+      - ZaraTindall
+
+  - partners:
+      - Anne
+      - TimothyLaurence
+
+  - partners:
+      - PeterPhillips
+      - AutumnPhillips
+    current: false
+    children:
+      - SavannahPhillips
+      - IslaPhillips
+
+  - partners:
+      - ZaraTindall
+      - MikeTindall
+    children:
+      - MiaTindall
+      - LenaTindall
+      - LucasTindall
+
+  - partners:
+      - AndrewMountbattenWindsor
+      - SarahFerguson
+    current: false
+    children:
+      - Beatrice
+      - Eugenie
+
+  - partners:
+      - Beatrice
+      - EdoardoMapelliMozzi
+    children:
+      - SiennaMapelliMozzi
+      - AthenaMapelliMozzi
+
+  - partners:
+      - Eugenie
+      - JackBrooksbank
+    children:
+      - AugustBrooksbank
+      - ErnestBrooksbank
+
+  - partners:
+      - Edward
+      - Sophie
+    children:
+      - LouiseWindsor
+      - James
+
+config:
+  origin: ElizabethII
+  skipExpansion: []
+  skipVisit: []
